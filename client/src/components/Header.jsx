@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { userContext } from "../UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ProgressBar from "./ProgressBar";
+import avatar from "../assets/avatar.png";
 
 export default function Header(props) {
   const { user } = useContext(userContext);
@@ -47,38 +49,40 @@ export default function Header(props) {
 
   console.log(user);
   return (
-    <div className="flex justify-between p-2 w-full h-16 bg-[yellow]">
-      {console.log(posts)}
-      <div className="flex border border-gray-300 w-1/2 ">
-        <img
-          src=""
-          alt=""
-          className="border border-gray-300 h-[30px] w-[30px]"
-        />
-        <div className="w-full">
-          <div className="border border-gray-300 bg-white">
-            <h2>{!!user && user.username}</h2>
+    <div className="flex justify-between p-2 mt-1 mr-1 w-full h-16 bg-[black] text-white">
+      <div className="flex w-1/2 gap-2">
+        <h1>Trackify</h1>
+
+        <div className="flex w-full gap-1">
+          <h2>O</h2>
+          <div className="flex rounded-sm items-center border w-full mt-1 h-1/2 bg-[#0099C4] justify-center">
+            <h2 className="">{!!user && user.username}</h2>
           </div>
-          <div className="flex justify-between">
-            <h2>Level: {userInfo.level}</h2>
-            <h2>Experience: {userInfo.exp}</h2>
+
+          <div className="flex w-full h-1/2 gap-1">
+            <h2>Lv{userInfo.level}</h2>
+            <ProgressBar userInfo={userInfo} />
+            {/* <h2>Experience: {userInfo.exp}</h2> */}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-center items-center border border-gray-300 h-14 w-14"></div>
+      <div className="flex justify-center items-center h-14 w-1/3"></div>
 
-      <div className="flex border border-gray-300 w-1/2 ">
-        <h2 className="border border-gray-300">profile</h2>
-        <h2 className="border border-gray-300">setting</h2>
+      <div className="flex justify-end gap-3 items-start w-1/2 ">
+        {/* <h2 className="border border-gray-300">profile</h2> */}
+        <h2 className="border bg-[#0099C4] rounded-sm px-1 py-[1px]">
+          setting
+        </h2>
         <h2
-          className="border border-gray-300"
+          className="border bg-[#0099C4] rounded-sm px-1 py-[1px]"
           onClick={() => {
             handleOnClick();
           }}
         >
           logout
         </h2>
+        <img src={avatar} alt="" className="aspect-square h-full" />
       </div>
     </div>
   );

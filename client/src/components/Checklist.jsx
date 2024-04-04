@@ -4,43 +4,38 @@ import InputBox from "./InputBox";
 import { userContext } from "../UserContext";
 
 export default function Checklist(props) {
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editing, setEditing] = useState(false);
   const { user } = useContext(userContext);
-  const [postStates, setPostStates] = useState([]);
+  const [newContent, setNewContent] = useState(props.content);
+  const [newDiff, setNewDiff] = useState(props.difficulty);
 
   useEffect(() => {
-    if (props.posts) {
-      setPostStates(
-        props.posts.map((post) => ({
-          id: post._id,
-          content: post.content,
-          difficulty: post.difficulty,
-        }))
-      );
-    }
-  }, [props.posts]);
+    console.log(props.content);
+    setNewContent(props.content);
+  }, [props.content]);
 
   useEffect(() => {
-    console.log(postStates);
-  }, [postStates]);
+    console.log(props.difficulty);
+    setNewDiff(props.difficulty);
+  }, [props.difficulty]);
 
-  function onSubmit(index, task, selectedDifficulty) {
+  function onCalick() {
+    setEditing(false);
+  }
+
+  function onSubmit(task, selectedDifficulty) {
     console.log(selectedDifficulty, task);
     axios
-      .patch(
-        `http://localhost:3000/posts/${user._id}/${props.posts[index]._id}`,
-        {
-          content: task,
-          difficulty: selectedDifficulty,
-        }
-      )
+      .patch(`http://localhost:3000/posts/${user._id}/${props.id}`, {
+        content: task,
+        difficulty: selectedDifficulty,
+      })
       .then((res) => {
         console.log(res);
-        const newPostStates = [...postStates];
-        newPostStates[index].content = res.data.content;
-        newPostStates[index].difficulty = res.data.difficulty;
-        setPostStates(newPostStates);
-        setEditingIndex(null);
+        setNewContent(res.data.content);
+        setNewDiff(res.data.difficulty);
+        props.updatePosts(res.data);
+        setEditing(false);
       })
       .catch((Err) => {
         console.log(Err);
@@ -48,60 +43,62 @@ export default function Checklist(props) {
     setNewContent("");
   }
 
-  function onCheck(id, newDifficulty) {
-    console.log(id, newDifficulty);
-    axios
-      .delete(`http://localhost:3000/posts/${user._id}/${id}/${newDifficulty}`)
-      .then((res) => {
-        console.log(res, newDifficulty);
-        const result = postStates.filter((post) => post.id !== id);
-        setPostStates(result);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  return postStates.map((post, index) => {
-    return (
-      <div className="flex align-center " key={post.id}>
+  return (
+    <div
+      className="flex items-center overflow-hidden border border-white bg-[#0099c4] h-12 rounded-md m-1"
+      key={props.id}
+    >
+      <div
+        className={`flex justify-center items-center rounded-md w-12 h-12 relative mr-1 ${
+          newDiff === "hard"
+            ? "bg-cyan-900"
+            : newDiff === "easy"
+            ? "bg-cyan-400"
+            : "bg-cyan-700"
+        }`}
+      >
         <input
           type="checkbox"
           name=""
           id=""
           onClick={(res) => {
             if (res.target.checked) {
-              onCheck(post.id, post.difficulty);
+              props.onCheck(props.id);
             }
           }}
+          className="absolute w-6 h-6 mx-2"
+          //colors: red:FB5012 yellow:E9DF00 green:08A045
         />
-        <div>
-          {editingIndex === index ? (
-            <div>
-              <InputBox
-                onSubmit={(task, selectedDifficulty) => {
-                  onSubmit(index, task, selectedDifficulty);
-                  {
-                    console.log(task, selectedDifficulty);
-                  }
-                }}
-                newTask={post.content}
-                newDifficulty={post.difficulty}
-              />
-            </div>
-          ) : (
-            <label
-              htmlFor=""
-              onClick={() => {
-                setEditingIndex(index);
-                console.log(newContent + " " + newDiff);
-              }}
-            >
-              {post.content + " diff: " + post.difficulty}
-            </label>
-          )}
-        </div>
       </div>
-    );
-  });
+
+      <div>
+        {editing && (
+          <div>
+            <InputBox
+              handleBGClick={() => {
+                onCalick();
+              }}
+              onSubmit={(task, selectedDifficulty) => {
+                onSubmit(task, selectedDifficulty);
+                {
+                  console.log(task, selectedDifficulty);
+                }
+              }}
+              newTask={newContent}
+              newDifficulty={newDiff}
+            />
+          </div>
+        )}
+        <label
+          htmlFor=""
+          onClick={() => {
+            setEditing(true);
+            console.log(newContent + " " + newDiff);
+          }}
+        >
+          {newContent}
+        </label>
+      </div>
+    </div>
+  );
 }

@@ -52,6 +52,7 @@ router.patch("/:userId", async (req, res) => {
 router.patch("/:userId/:id", async (req, res) => {
   const { id, userId } = req.params;
   const { content, difficulty } = req.body;
+  console.log(id, userId, "sf:" + content);
 
   try {
     console.log("difficulty: " + difficulty);
@@ -68,7 +69,7 @@ router.patch("/:userId/:id", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  console.log(id, userId, content);
+  console.log(id, userId, "sf:" + content);
 });
 
 router.delete("/:userId/:id/:difficulty", async (req, res) => {
