@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const Post = require("./models/Post.js");
 const postRoute = require("./routes/postRoutes.js");
 const userRoute = require("./routes/userRoutes.js");
+const noteRoute = require("./routes/notesRoutes.js");
 const cors = require("cors");
 
 const mongoString = process.env.MONGO_URI;
@@ -33,6 +34,7 @@ app.get("/api/:user", (req, res) => {
 app.use("/posts", postRoute);
 app.use("/auth", authRouter);
 app.use("/user", userRoute);
+app.use("/notes", noteRoute);
 
 mongoose
   .connect(mongoString)

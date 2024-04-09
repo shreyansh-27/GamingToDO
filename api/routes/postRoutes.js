@@ -102,6 +102,7 @@ router.delete("/:userId/:id/:difficulty", async (req, res) => {
       const updatedExp = currentExp + diff;
       const currentLvl = userProfile.level;
       const updatedLevel = calculateExpVsLevel(currentLvl, updatedExp);
+
       console.log("New level" + updatedLevel);
 
       const exp = await User.findByIdAndUpdate(userId, {

@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
       hashed_password: hash,
       salt: salt,
       exp: 0,
-      level: 0,
+      level: 1,
     });
 
     // Respond with the newly created user or a success message

@@ -1,7 +1,6 @@
 const Post = require("./Post.js");
+const Note = require("./Note.js");
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
-const findOrCreate = require("mongoose-findorcreate");
 
 const userSchema = mongoose.Schema({
   id: { type: String },
@@ -11,7 +10,7 @@ const userSchema = mongoose.Schema({
   exp: Number,
   level: Number,
   listOfTodo: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  listOfNote: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note" }],
 });
-
 
 module.exports = mongoose.model("User", userSchema);
